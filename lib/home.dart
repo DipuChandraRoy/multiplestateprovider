@@ -13,7 +13,34 @@ class HomePage extends ConsumerWidget {
         children: [
           Consumer(
             builder: (context, ref, child) {
-              final slider = ref.watch(SliderProvider);
+              print("object eye");
+              final slider = ref.watch(
+                SliderProvider.select((state) => state.showpassword),
+              );
+
+              return InkWell(
+                onTap: () {
+                  final stateProvider = ref.read(SliderProvider.notifier);
+                  stateProvider.state = stateProvider.state.copyWith(
+                    showpassword: !slider,
+                  );
+                },
+                child: Container(
+                  height: 200,
+                  width: 200,
+                  child: slider
+                      ? Icon(Icons.remove_red_eye)
+                      : Icon(Icons.remove_red_eye_outlined),
+                ),
+              );
+            },
+          ),
+          Consumer(
+            builder: (context, ref, child) {
+              final slider = ref.watch(
+                SliderProvider.select((state) => state.slider),
+              );
+              print("Build slider");
 
               return Container(
                 height: 200,
@@ -27,9 +54,12 @@ class HomePage extends ConsumerWidget {
               final slider = ref.watch(SliderProvider);
 
               return Slider(
-                value: slider,
+                value: slider.slider,
                 onChanged: (value) {
-                  ref.read(SliderProvider.notifier).state = value;
+                  final stateProvider = ref.read(SliderProvider.notifier);
+                  stateProvider.state = stateProvider.state.copyWith(
+                    slider: value,
+                  );
                 },
               );
             },
